@@ -16,16 +16,16 @@
 
 const NSUInteger kMaxReadLength = 10 * 1024;
 
-@interface Message: NSObject
+@interface RNRTCMessage: NSObject
 
 @property (nonatomic, assign, readonly) CVImageBufferRef imageBuffer;
-@property (nonatomic, copy, nullable) void (^didComplete)(BOOL succes, Message *message);
+@property (nonatomic, copy, nullable) void (^didComplete)(BOOL succes, RNRTCMessage *message);
 
 - (NSInteger)appendBytes: (UInt8 *)buffer length:(NSUInteger)length;
 
 @end
 
-@interface Message ()
+@interface RNRTCMessage ()
 
 @property (nonatomic, assign) CVImageBufferRef imageBuffer;
 @property (nonatomic, assign) int imageOrientation;
@@ -33,7 +33,7 @@ const NSUInteger kMaxReadLength = 10 * 1024;
 
 @end
 
-@implementation Message
+@implementation RNRTCMessage
 
 - (instancetype)init {
     self = [super init];
@@ -122,7 +122,7 @@ const NSUInteger kMaxReadLength = 10 * 1024;
 @interface ScreenCapturer () <NSStreamDelegate>
 
 @property (nonatomic, strong) SocketConnection *connection;
-@property (nonatomic, strong) Message *message;
+@property (nonatomic, strong) RNRTCMessage *message;
 
 @end
 
@@ -162,11 +162,11 @@ const NSUInteger kMaxReadLength = 10 * 1024;
     }
         
     if (!self.message) {
-        self.message = [[Message alloc] init];
+        self.message = [[RNRTCMessage alloc] init];
         _readLength = kMaxReadLength;
         
         __weak __typeof__(self) weakSelf = self;
-        self.message.didComplete = ^(BOOL success, Message *message) {
+        self.message.didComplete = ^(BOOL success, RNRTCMessage *message) {
             if (success) {
                 [weakSelf didCaptureVideoFrame:message.imageBuffer withOrientation:message.imageOrientation];
             }
